@@ -547,12 +547,10 @@ void setColor(int color) {
 void rainbowShift() {
   int shiftAmount = 5;
 
-  //to red
-  for (int c = 1; c < 126; c = c + shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(c, 0, 0));
-      strip.show();
-    }
+  //start with all red
+  for (int i = 0; i < NUMPIXELS; i++) {
+    strip.setPixelColor(i, strip.Color(125, 0, 0));
+    strip.show();
   }
   //red to yellow
   for (int c = 1; c < 126; c = c + shiftAmount) {
