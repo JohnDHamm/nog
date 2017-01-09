@@ -43,9 +43,9 @@ int pause = 50; //for chase functions
 int redLED = 0;
 int blueLED = 0;
 int greenLED = 0;
-int sixteenthNote = 80;
-int eighthNote = 160;
-int songLength = 192;
+int sixteenthNote = 81;
+int eighthNote = 162;
+//int songLength = 192;
 
 /****************setup****************/
 void setup(void)
@@ -251,7 +251,6 @@ void rainbowShift() {
   }
 }
 
-
 void clearLights() {
   for(int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
@@ -260,53 +259,200 @@ void clearLights() {
 }
 
 void songTest() {
-  int centerGroup[] = {0,5,10,15,20,25};
-  int centerGroupLength = 6;
-  int shortBranchGroup[] = {4,9,14,19,24,29};
-  int branchArmsGroup[] = {1,3,6,8,11,13,16,18,21,23,26,28};
-  int tipsGroup[] = {2,7,12,17,22,27};
-  int branchN[] = {0,1,2,3,4};
-  int branchNE[] = {5,6,7,8,9};
-  int branchSE[] = {10,11,12,13,14};
-  int branchS[] = {15,16,17,18,19};
-  int branchSW[] = {20,21,22,23,24};
-  int branchNW[] = {25,26,27,28,29};
+  int centerGroup[] = {6, 0,5,10,15,20,25};
+  int shortBranchGroup[] = {6, 4,9,14,19,24,29};
+  int allInnerGroup[] = {12, 0,5,10,15,20,25, 4,9,14,19,24,29};
+  int branchArmsGroup[] = {12, 1,3,6,8,11,13,16,18,21,23,26,28};
+  int tipsGroup[] = {6, 2,7,12,17,22,27};
+  int branchN[] = {5, 0,1,2,3,4};
+  int branchNE[] = {5, 5,6,7,8,9};
+  int branchSE[] = {5, 10,11,12,13,14};
+  int branchS[] = {5, 15,16,17,18,19};
+  int branchSW[] = {5, 20,21,22,23,24};
+  int branchNW[] = {5, 25,26,27,28,29};
 
   clearLights();
 
-  //test 4 measures of main riff with led#2 as red
-  for ( int i = 0; i < 4; i++) {
-    songMainRiff(666, centerGroup, centerGroupLength);
+  //1-7 chunky guitar riff with start measure - blue, shortBranchGroup
+  chunkyGuitarStart(670, shortBranchGroup);
+  for ( int i = 0; i < 6; i++) {
+    chunkyGuitarRiff(670, shortBranchGroup);
   }
+
+  //8-12 chunky guitar with bells - bells: yellow, tips, riff: green, arms
+  chunkyGuitarBellsStart(667, tipsGroup, 670, shortBranchGroup);
+  for ( int i = 0; i < 3; i++) {
+    chunkyGuitarBellsRiff(668, tipsGroup, 670, shortBranchGroup);
+  }
+  chunkyGuitarBellsEnd(667, tipsGroup, 670, shortBranchGroup);
+
+  //13-15 chunky guitar riff with start measure - blue, shortBranchGroup
+  chunkyGuitarStart(670, shortBranchGroup);
+  for ( int i = 0; i < 2; i++) {
+    chunkyGuitarRiff(670, shortBranchGroup);
+  }
+
+  //16-20 chunky guitar with bells - bells: yellow, tips, riff: green, arms
+  chunkyGuitarBellsStart(667, tipsGroup, 670, shortBranchGroup);
+  for ( int i = 0; i < 3; i++) {
+    chunkyGuitarBellsRiff(668, tipsGroup, 670, shortBranchGroup);
+  }
+  chunkyGuitarBellsEnd(667, tipsGroup, 670, shortBranchGroup);
+
+  //21-24 chunky guitar riff with start measure - blue, shortBranchGroup
+  chunkyGuitarStart(670, shortBranchGroup);
+  for ( int i = 0; i < 3; i++) {
+    chunkyGuitarRiff(670, shortBranchGroup);
+  }
+
+  //25-28 main riff with red centerGroup
+  for ( int i = 0; i < 4; i++) {
+    mainRiff(666, centerGroup);
+  }
+
+  //29-32 main riff with white allInnerGroup
+  for ( int i = 0; i < 4; i++) {
+    mainRiff(125, allInnerGroup);
+  }
+
 }
 
 
-void turnOn(int color, int group[], int groupLength) {
+void turnOn(int color, int group[]) {
   setColor(color);
-  for (int i = 0; i < groupLength; i++) {
+  int groupTotal = group[0];
+  for (int i = 1; i <= groupTotal; i++) {
     strip.setPixelColor(group[i], strip.Color(redLED, greenLED, blueLED));
   }
   strip.show();
 }
 
-void songMainRiff(int color, int group, int groupLength) {
-  turnOn(color, group, groupLength);
+void turnOnAll(int color) {
+  setColor(color);
+  for (int i = 1; i < NUMPIXELS; i++) {
+    strip.setPixelColor(i, strip.Color(redLED, greenLED, blueLED));
+  }
+  strip.show();
+}
+
+void turnOff(int group[]) {
+  int groupTotal = group[0];
+  for (int i = 1; i <= groupTotal; i++) {
+    strip.setPixelColor(group[i], strip.Color(0, 0, 0));
+  }
+  strip.show();
+}
+
+
+
+void chunkyGuitarStart(int color, int group) {
+  turnOnAll(color);
   delay(eighthNote);
   clearLights();
   delay(eighthNote);
-  turnOn(color, group, groupLength);
-  delay(sixteenthNote);
+  for (int i= 0; i < 4; i++) {
+    turnOn(color, group);
+    delay(sixteenthNote);
+    clearLights();
+    delay(sixteenthNote);
+  }
+}
+
+void chunkyGuitarRiff(int color, int group) {
+  turnOn(color, group);
+  delay(eighthNote);
   clearLights();
+  delay(eighthNote);
+  for (int i= 0; i < 4; i++) {
+    turnOn(color, group);
+    delay(sixteenthNote);
+    clearLights();
+    delay(sixteenthNote);
+  }
+}
+
+void chunkyGuitarBellsStart(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+  turnOn(riffColor, riffGroup);
+  delay(eighthNote);
+  turnOff(riffGroup);
+  delay(eighthNote);
+  for (int i= 0; i < 2; i++) {
+    turnOn(riffColor, riffGroup);
+    delay(sixteenthNote);
+    turnOff(riffGroup);
+    delay(sixteenthNote);
+  }
+  turnOn(riffColor, riffGroup);
+  turnOn(bellsColor, bellsGroup);
   delay(sixteenthNote);
-  turnOn(color, group, groupLength);
+  turnOff(riffGroup);
   delay(sixteenthNote);
+  turnOff(bellsGroup);
+  turnOn(riffColor, riffGroup);
+  delay(sixteenthNote);
+  turnOff(riffGroup);
+}
+
+void chunkyGuitarBellsRiff(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+  turnOn(bellsColor, bellsGroup);
+  turnOn(riffColor, riffGroup);
+  delay(eighthNote);
+  turnOff(riffGroup);
+  delay(eighthNote);
+  turnOff(bellsGroup);
+  for (int i= 0; i < 2; i++) {
+    turnOn(riffColor, riffGroup);
+    delay(sixteenthNote);
+    turnOff(riffGroup);
+    delay(sixteenthNote);
+  }
+  turnOn(riffColor, riffGroup);
+  turnOn(bellsColor, bellsGroup);
+  delay(sixteenthNote);
+  turnOff(riffGroup);
+  delay(sixteenthNote);
+  turnOff(bellsGroup);
+  turnOn(riffColor, riffGroup);
+  delay(sixteenthNote);
+  turnOff(riffGroup); 
+}
+
+void chunkyGuitarBellsEnd(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+  turnOn(bellsColor, bellsGroup);
+  turnOn(riffColor, riffGroup);
+  delay(eighthNote);
+  turnOff(riffGroup);
+  delay(eighthNote);
+  turnOff(bellsGroup);
+  for (int i= 0; i < 4; i++) {
+    turnOn(riffColor, riffGroup);
+    delay(sixteenthNote);
+    turnOff(riffGroup);
+    delay(sixteenthNote);
+  }  
+}
+
+
+void mainRiff(int color, int group) {
+  turnOn(color, group);
+  delay(eighthNote);
   clearLights();
-  delay(sixteenthNote);
-  turnOn(color, group, groupLength);
+  delay(eighthNote);
+  for (int i = 0; i < 2; i++) {
+    turnOn(color, group);
+    delay(sixteenthNote);
+    clearLights();
+    delay(sixteenthNote);
+  }
+  turnOn(color, group);
   delay(eighthNote);
   clearLights();
   delay(eighthNote);
 }
+
+
+
+
 
 
 
