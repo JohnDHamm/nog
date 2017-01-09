@@ -72,7 +72,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800
 
 // for reading bluetooth data
 boolean readCompleted = false;
-String fromPhone = "";
+char receivedData;
+boolean continuePattern = false;
+char action;
 
 //for pattern buttons
 int pause = 50; //for chase functions
@@ -178,44 +180,72 @@ void loop(void) {
       break;
     }else{
       Serial.print("readChar: ");Serial.println(ReadChar);
-      fromPhone += ReadChar;
-      Serial.print("fromPhone: ");Serial.println(fromPhone);
+      receivedData = ReadChar;
+      Serial.print("receivedData: ");Serial.println(receivedData);
     }
   }
   
-  if ( readCompleted == true ) {
+  if ( readCompleted == true ) { //on new character received...
     Serial.print("read completed: ");
-    Serial.println(fromPhone);
+    Serial.println(receivedData);
     readCompleted = false;
-  
-    if ( fromPhone == "song" ) {   
-      Serial.println("play song");
-      songBells();
-    }
-               
-    if ( fromPhone == "1" ) {
-      Serial.println("pattern one");
-      chaseBlue();
+
+    switch (receivedData) {
+      case 'S':
+        Serial.println("play song");
+        action = receivedData;
+        continuePattern = false;
+        songBells();
+        break;
+      case '1':
+        Serial.println("pattern one");
+        action = receivedData;
+        continuePattern = true;
+        chaseBlue();
+        break;
+      case '2':
+        Serial.println("pattern two");
+        action = receivedData;
+        continuePattern = true;
+        break;
+      case '3':
+        Serial.println("pattern three");
+        action = receivedData;
+        continuePattern = true;
+        break;
+      case '4':
+        Serial.println("pattern four");
+        action = receivedData;
+        continuePattern = true;
+        break;
+      case 'X':
+        Serial.println("pattern four");
+        action = receivedData;
+        continuePattern = false;
+        clearLights();
+        break;
     }
 
-    if ( fromPhone == "2" ) {
-      Serial.println("pattern two");
-      chaseGreen();
-    }
-    
-    if ( fromPhone == "3" ) {
-      Serial.println("pattern three");
-      //chaseGreen();
-    }
-    
-    if ( fromPhone == "4" ) {
-      Serial.println("pattern four");
-      rainbowShift();
-    }
-    
-    
     Serial.println("done");
-    fromPhone = "";
+    receivedData = "";
+  }
+
+  
+  if ( continuePattern ) {
+    switch (action ) {
+      case '1':
+        chaseBlue();
+        break;
+      case '2':
+        chaseGreen();
+        break;
+      case '3':
+        chaseRed();
+        break;
+      case '4':
+        rainbowShift();
+        break;
+    }
   }
   
 }
@@ -251,7 +281,19 @@ void chaseGreen() {
   }
 }
 
-
+void chaseRed() {
+  for (int i = 0; i < NUMPIXELS; i++) {
+    strip.setPixelColor(i, strip.Color(125, 0, 0));
+    strip.show();
+    delay(pause);
+  }
+  delay(100);
+  for (int i = 0; i < NUMPIXELS; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
+    strip.show();
+    delay(pause);
+  }
+}
 
 
 
