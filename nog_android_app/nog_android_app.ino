@@ -201,7 +201,6 @@ void loop(void) {
         Serial.println("pattern one");
         action = receivedData;
         continuePattern = true;
-        chaseBlue();
         break;
       case '2':
         Serial.println("pattern two");
@@ -232,7 +231,7 @@ void loop(void) {
 
   
   if ( continuePattern ) {
-    switch (action ) {
+    switch ( action ) {
       case '1':
         chaseBlue();
         break;
