@@ -99,8 +99,8 @@ void error(const __FlashStringHelper*err) {
 /**************************************************************************/
 void setup(void) {
   
-  while (!Serial);  // required for Flora & Micro
-  delay(500);
+  //while (!Serial);  // required for Flora & Micro
+  //delay(500);
 
   // turn off neopixel
   strip.begin(); // This initializes the NeoPixel library.
@@ -322,36 +322,37 @@ void songBells() {
 
   delay(125); //intial delay for music to start on phone app
 
-  //1-7 chunky guitar riff with start measure - blue, shortBranchGroup
+  //1-7 chunky guitar riff with start measure - blue, shortBranchGroup, bass: blue all Inner
   chunkyGuitarStart(670, shortBranchGroup);
   for ( int i = 0; i < 6; i++) {
-    chunkyGuitarRiff(670, shortBranchGroup);
+    chunkyGuitarRiff(670, allInnerGroup, 670, shortBranchGroup); //bass, riff
   }
 
-  //8-12 chunky guitar with bells - bells: yellow, tips, riff: green, arms
-  chunkyGuitarBellsStart(667, tipsGroup, 670, shortBranchGroup);
+  //8-12 chunky guitar with bells - bells: yellow, tips, riff: blue, shortBranchGroup, bass: blue all Inner, strings: red/yellow/green/aqua
+  chunkyGuitarBellsStart(670, allInnerGroup, 667, tipsGroup, 670, shortBranchGroup); //bass, bells, riff
   for ( int i = 0; i < 3; i++) {
-    chunkyGuitarBellsRiff(668, tipsGroup, 670, shortBranchGroup);
+    chunkyGuitarBellsRiff(670, allInnerGroup, 668, tipsGroup, 670, shortBranchGroup, 666 + i, branchArmsGroup);  //bass, bells, riff, strings
   }
-  chunkyGuitarBellsEnd(667, tipsGroup, 670, shortBranchGroup);
+  chunkyGuitarBellsEnd(670, allInnerGroup, 667, tipsGroup, 670, shortBranchGroup, 669, branchArmsGroup); //bass, bells, riff, strings
 
   //13-15 chunky guitar riff with start measure - blue, shortBranchGroup
   chunkyGuitarStart(670, shortBranchGroup);
   for ( int i = 0; i < 2; i++) {
-    chunkyGuitarRiff(670, shortBranchGroup);
+    chunkyGuitarRiff(670, allInnerGroup, 670, shortBranchGroup); //bass, riff
   }
 
-  //16-20 chunky guitar with bells - bells: yellow, tips, riff: green, arms
-  chunkyGuitarBellsStart(667, tipsGroup, 670, shortBranchGroup);
+  //16-20 chunky guitar with bells - bells: yellow, tips, riff: blue, shortBranchGroup, bass: blue all Inner, strings: red/yellow/green/aqua
+  chunkyGuitarBellsStart(670, allInnerGroup, 667, tipsGroup, 670, shortBranchGroup); //bass, bells, riff
   for ( int i = 0; i < 3; i++) {
-    chunkyGuitarBellsRiff(668, tipsGroup, 670, shortBranchGroup);
+    chunkyGuitarBellsRiff(670, allInnerGroup, 668, tipsGroup, 670, shortBranchGroup, 666 + i, branchArmsGroup);  //bass, bells, riff, strings
   }
-  chunkyGuitarBellsEnd(667, tipsGroup, 670, shortBranchGroup);
+  chunkyGuitarBellsEnd(670, allInnerGroup, 667, tipsGroup, 670, shortBranchGroup, 669, branchArmsGroup); //bass, bells, riff, strings
+
 
   //21-24 chunky guitar riff with start measure - blue, shortBranchGroup
   chunkyGuitarStart(670, shortBranchGroup);
   for ( int i = 0; i < 3; i++) {
-    chunkyGuitarRiff(670, shortBranchGroup);
+    chunkyGuitarRiff(670, allInnerGroup, 670, shortBranchGroup); //bass, riff
   }
 
   //25-28 main riff with red centerGroup
@@ -395,7 +396,7 @@ void turnOff(int group[]) {
 
 
 void chunkyGuitarStart(int color, int group) {
-  turnOnAll(color);
+  turnOnAll(125);
   delay(eighthNote);
   clearLights();
   delay(eighthNote);
@@ -407,21 +408,22 @@ void chunkyGuitarStart(int color, int group) {
   }
 }
 
-void chunkyGuitarRiff(int color, int group) {
-  turnOn(color, group);
+void chunkyGuitarRiff(int bassColor, int bassGroup, int riffColor, int riffGroup) {
+  turnOn(bassColor, bassGroup);
   delay(eighthNote);
   clearLights();
   delay(eighthNote);
   for (int i= 0; i < 4; i++) {
-    turnOn(color, group);
+    turnOn(riffColor, riffGroup);
     delay(sixteenthNote);
-    clearLights();
+    turnOff(riffGroup);
     delay(sixteenthNote);
   }
 }
 
-void chunkyGuitarBellsStart(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+void chunkyGuitarBellsStart(int bassColor, int bassGroup, int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
   turnOn(riffColor, riffGroup);
+  turnOn(bassColor, bassGroup);
   delay(eighthNote);
   turnOff(riffGroup);
   delay(eighthNote);
@@ -442,11 +444,12 @@ void chunkyGuitarBellsStart(int bellsColor, int bellsGroup, int riffColor, int r
   turnOff(riffGroup);
 }
 
-void chunkyGuitarBellsRiff(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+void chunkyGuitarBellsRiff(int bassColor, int bassGroup, int bellsColor, int bellsGroup, int riffColor, int riffGroup, int stringColor, int stringGroup) {
   turnOn(bellsColor, bellsGroup);
-  turnOn(riffColor, riffGroup);
+  turnOn(stringColor, stringGroup);
+  turnOn(bassColor, bassGroup);
   delay(eighthNote);
-  turnOff(riffGroup);
+  turnOff(bassGroup);
   delay(eighthNote);
   turnOff(bellsGroup);
   for (int i= 0; i < 2; i++) {
@@ -466,11 +469,12 @@ void chunkyGuitarBellsRiff(int bellsColor, int bellsGroup, int riffColor, int ri
   turnOff(riffGroup); 
 }
 
-void chunkyGuitarBellsEnd(int bellsColor, int bellsGroup, int riffColor, int riffGroup) {
+void chunkyGuitarBellsEnd(int bassColor, int bassGroup, int bellsColor, int bellsGroup, int riffColor, int riffGroup, int stringColor, int stringGroup) {
   turnOn(bellsColor, bellsGroup);
-  turnOn(riffColor, riffGroup);
+  turnOn(stringColor, stringGroup);
+  turnOn(bassColor, bassGroup);
   delay(eighthNote);
-  turnOff(riffGroup);
+  turnOff(bassGroup);
   delay(eighthNote);
   turnOff(bellsGroup);
   for (int i= 0; i < 4; i++) {
