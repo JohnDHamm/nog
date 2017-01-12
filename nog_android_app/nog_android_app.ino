@@ -243,7 +243,7 @@ void loop(void) {
         chaseRed();
         break;
       case '4':
-        testArrays();
+        rainbowShift();
         break;
     }
   }
@@ -416,6 +416,62 @@ void songBells() {
   /********************************************************************** next up **********************************************/
   //41-44 ascending guitar repeat (1 measure repeats 3x)
   //ascendGuitarRepeat();
+  for (int i = 0; i < 3; i++) {
+    turnOn(color2, branchN);
+    turnOnSingleLED(color1, 29);
+    delay(eighthNote);
+    turnOff(branchN);
+    turnOffSingleLED(29);
+
+    turnOn(color2, branchNE);
+    turnOnSingleLED(color1, 24);
+    delay(eighthNote);
+    turnOff(branchNE);
+    turnOffSingleLED(24);
+
+    turnOn(color2, branchSE);
+    turnOnSingleLED(color1, 19);
+    delay(eighthNote);
+    turnOff(branchSE);
+    turnOffSingleLED(19);
+
+    turnOn(color2, branchS);
+    turnOnSingleLED(color1, 14);
+    delay(eighthNote);
+    turnOff(branchS);
+    turnOffSingleLED(14);
+
+    turnOn(color2, branchSW);
+    turnOnSingleLED(color1, 9);
+    delay(eighthNote);
+    turnOff(branchSW);
+    turnOffSingleLED(9);
+
+    turnOn(color2, branchNW);
+    turnOnSingleLED(color1, 4);
+    delay(eighthNote);
+    turnOff(branchNW);
+    turnOffSingleLED(4);
+  }
+
+  turnOn(color1, branchSW);
+  turnOnSingleLED(color2, 9);
+  delay(eighthNote);
+  turnOn(color1, branchS);
+  turnOnSingleLED(color2, 14);
+  delay(eighthNote);
+    turnOn(color1, branchSE);
+  turnOnSingleLED(color2, 19);
+  delay(eighthNote);
+    turnOn(color1, branchNE);
+  turnOnSingleLED(color2, 24);
+  delay(eighthNote);
+    turnOn(color1, branchN);
+  turnOnSingleLED(color2, 29);
+  delay(eighthNote);
+    turnOn(color1, branchNW);
+  turnOnSingleLED(color2, 4);
+  delay(eighthNote);
 
   //45-48 descending piano chords
   //descendPianoStart();
@@ -491,6 +547,10 @@ void turnOff(int group[]) {
   strip.show();
 }
 
+void turnOffSingleLED(int lightNum){
+  strip.setPixelColor(lightNum, strip.Color(0, 0, 0));
+  strip.show();
+}
 
 
 void chunkyGuitarStart(int color, int group) {
@@ -694,29 +754,7 @@ void descendingGuitar(int cymbalColor, int cymbalGroup, int riffStartColor, int 
   clearLights();
 }
 
-void ascendingGuitar(int color1, int color2, int branchesCW[6][5]) {
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 6; j++) {
-      int currentBranch[] = {branchesCW[j]};
-      Serial.print(currentBranch[1]);
-      turnOn(color1, currentBranch);
-      delay(eighthNote);
-    }
-    
-    turnOnSingleLED(color1, 4);
-    turnOnSingleLED(color1, 29);
-    delay(eighthNote);
-    turnOnSingleLED(color1, 9);
-    turnOnSingleLED(color1, 24);
-    delay(eighthNote);
-    turnOnSingleLED(color1, 14);
-    turnOnSingleLED(color1, 19);
-    delay(quarterNote);
-    turnOnAll(color2);
-    delay(quarterNote);
-    clearLights();
-  }
-}
+
 
 
 
