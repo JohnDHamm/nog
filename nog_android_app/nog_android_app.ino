@@ -334,7 +334,7 @@ void songBells() {
   int branchS[] = {4, 15,16,17,18};
   int branchSW[] = {4, 20,21,22,23};
   int branchNW[] = {4, 25,26,27,28};
-  int branchesCW[6][5] = {{4, 0,1,2,3}, {4, 5,6,7,8}, {4, 10,11,12,13}, {4, 15,16,17,18}, {4, 20,21,22,23}, {4, 25,26,27,28}};
+  
 
   clearLights();
 
@@ -413,9 +413,7 @@ void songBells() {
     clearLights();
   }
   
-  /********************************************************************** next up **********************************************/
   //41-44 ascending guitar repeat (1 measure repeats 3x)
-  //ascendGuitarRepeat();
   for (int i = 0; i < 3; i++) {
     turnOn(color2, branchN);
     turnOnSingleLED(color1, 29);
@@ -460,31 +458,29 @@ void songBells() {
   turnOn(color1, branchS);
   turnOnSingleLED(color2, 14);
   delay(eighthNote);
-    turnOn(color1, branchSE);
+  turnOn(color1, branchSE);
   turnOnSingleLED(color2, 19);
   delay(eighthNote);
-    turnOn(color1, branchNE);
+  turnOn(color1, branchNE);
   turnOnSingleLED(color2, 24);
   delay(eighthNote);
-    turnOn(color1, branchN);
+  turnOn(color1, branchN);
   turnOnSingleLED(color2, 29);
   delay(eighthNote);
-    turnOn(color1, branchNW);
+  turnOn(color1, branchNW);
   turnOnSingleLED(color2, 4);
   delay(eighthNote);
-
-  //45-48 descending piano chords
-  //descendPianoStart();
-  //descendPiano(); 
   
-  //49-52 descend piano and high guitar
-  //descendPianoGuitar();
+  /********************************************************************** next up **********************************************/
+  //45-60
+  for ( int i = 0; i < 2; i++) {
+    //45-48 descending piano chords
+    descendPiano(669, shortBranchGroup, 666, tipsGroup); //riff: aqua,shortBranch - guitar: red, tips
+    
+    //49-52 descend piano and high guitar
+    descendPianoHighGuitar(669, shortBranchGroup, 666, tipsGroup); //riff: aqua,shortBranch - guitar: red, tips
+  }
 
-  //53-56 descending piano chords
-  //descendPiano();
-
-  //57-60 descend piano and high guitar
-  //descendPianoGuitar();
 
   //61-64 quiet piano main riff
   //quietPianoRiff();
@@ -752,6 +748,36 @@ void descendingGuitar(int cymbalColor, int cymbalGroup, int riffStartColor, int 
   turnOn(currentRiffColor, riffGroup4);
   delay(quarterNote);
   clearLights();
+}
+
+void descendPiano(int riffColor, int riffGroup, int guitarColor, int guitarGroup){
+  turnOnAll(125);
+  delay(eighthNote);
+  clearLights();
+  delay(eighthNote);
+  for (int i = 0; i < 9; i++) {
+    turnOn(riffColor, riffGroup);
+    delay(eighthNote);
+    turnOff(riffGroup);
+    delay(eighthNote);
+  }
+  turnOn(riffColor, riffGroup);
+  turnOn(guitarColor, guitarGroup);
+  delay(eighthNote);
+  turnOff(riffGroup);
+  turnOff(guitarGroup);
+  delay(eighthNote);
+}
+
+void descendPianoHighGuitar(int riffColor, int riffGroup, int guitarColor, int guitarGroup) {
+  for (int i = 0; i < 12; i++) {
+    turnOn(riffColor, riffGroup);
+    turnOn(guitarColor, guitarGroup);
+    delay(eighthNote);
+    turnOff(riffGroup);
+    turnOff(guitarGroup);
+    delay(eighthNote);
+  }
 }
 
 
