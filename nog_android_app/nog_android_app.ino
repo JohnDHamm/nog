@@ -489,16 +489,72 @@ void songBells() {
   
   quietPianoRiff(riffColors, riffGroup1, riffGroup2, hiPianoColors, hiPianoGroup1, hiPianoGroup2, bellColors, branchArmsGroup, stringColors, tipsGroup);
 
-  /********************************************************************** next up **********************************************/
   //81-88 screaming guitars main riff
   screamGuitars(667, allInnerGroup, 667, branchArmsGroup, tipsGroup); //guitar, string1 string2
   screamGuitars2(668, allInnerGroup, 668, branchArmsGroup, tipsGroup, 668, tipsGroup); //guitar, string1 string2, dblString
-  
+
+
+  /********************************************************************** next up **********************************************/
   //89-92 organ main riff
-  turnOnAll(666);
-  //organRiff();
+  //turnOnAll(666);
+  int sweepColors[] = {669,671,667,670};
+  int adjustedSixteenthNote = sixteenthNote;
+  for (int i = 0; i < 4; i=i+2) {
+    turnOn(sweepColors[i], branchN);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],4);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i], branchNE);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],9);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i], branchSE);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],14);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i], branchS);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],19);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i], branchSW);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],24);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i], branchNW);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i],29);
+    delay(adjustedSixteenthNote);
+
+    turnOn(sweepColors[i+1], branchN);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],29);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i+1], branchNW);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],24);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i+1], branchSW);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],19);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i+1], branchS);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],14);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i+1], branchSE);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],9);
+    delay(adjustedSixteenthNote);
+    turnOn(sweepColors[i+1], branchNE);
+    delay(adjustedSixteenthNote);
+    turnOnSingleLED(sweepColors[i+1],4);
+    delay(adjustedSixteenthNote);
+  }
+
 
   //93-96 organ heavy riff
+  clearLights();
+  turnOnAll(666);
   //organHeavyRiff();
 
   //97-100 huge hits
@@ -895,7 +951,6 @@ void screamGuitars(int guitarColor, int guitarGroup, int stringColor, int string
   }
 }
 
-
 void screamGuitars2(int guitarColor, int guitarGroup, int stringColor, int stringGroup1, int stringGroup2, int dblStringColor, int dblStringGroup){
   //85-88
   int adjustedQuarterNote = quarterNote - 30;
@@ -919,8 +974,6 @@ void screamGuitars2(int guitarColor, int guitarGroup, int stringColor, int strin
     delay(adjustedEighthNote);
   }
 }
-
-
 
 
 
