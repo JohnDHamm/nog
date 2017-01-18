@@ -100,8 +100,8 @@ void error(const __FlashStringHelper*err) {
 /**************************************************************************/
 void setup(void) {
   
-  while (!Serial);  // required for Flora & Micro
-  delay(500);
+  //while (!Serial);  // required for Flora & Micro
+  //delay(500);
 
   // turn off neopixel
   strip.begin(); // This initializes the NeoPixel library.
@@ -296,9 +296,6 @@ void chaseRed() {
 }
 
 
-
-
-
 void clearLights() {
   for(int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
@@ -325,7 +322,7 @@ void testArrays() {
 void songBells() {
   int centerGroup[] = {6, 0,5,10,15,20,25};
   int shortBranchGroup[] = {6, 4,9,14,19,24,29};
-  int allInnerGroup[] = {12, 0,5,10,15,20,25, 4,9,14,19,24,29};
+  int allInnerGroup[] = {12, 0,4,5,9,10,14,15,19,20,24,25,29};
   int branchArmsGroup[] = {12, 1,3,6,8,11,13,16,18,21,23,26,28};
   int tipsGroup[] = {6, 2,7,12,17,22,27};
   int branchN[] = {4, 0,1,2,3};
@@ -494,9 +491,11 @@ void songBells() {
 
   /********************************************************************** next up **********************************************/
   //81-88 screaming guitars main riff
-  //screamGuitars();
-
+  screamGuitars(667, allInnerGroup, 667, branchArmsGroup, tipsGroup); //guitar, string1 string2
+  screamGuitars2(668, allInnerGroup, 668, branchArmsGroup, tipsGroup, 668, tipsGroup); //guitar, string1 string2, dblString
+  
   //89-92 organ main riff
+  turnOnAll(666);
   //organRiff();
 
   //93-96 organ heavy riff
@@ -870,10 +869,56 @@ void quietPianoRiff(int riffColors[], int riffGroup1, int riffGroup2, int hiPian
     turnOn(riffColors[0], riffGroup2);
     turnOn(hiPianoColors[j+2], hiPianoGroup1);
     turnOn(hiPianoColors[j+3], hiPianoGroup2);
-    delay(quarterNote);
+    delay(quarterNote - 50);
+  }
+  clearLights();
+}
+
+void screamGuitars(int guitarColor, int guitarGroup, int stringColor, int stringGroup1, int stringGroup2){
+  //81-84
+  int adjustedQuarterNote = quarterNote - 50;
+  int adjustedEighthNote = eighthNote - 10;
+  for (int i = 0; i < 4; i++) { 
+    turnOn(guitarColor, guitarGroup);
+    delay(adjustedQuarterNote);
+    turnOff(guitarGroup);
+    turnOn(stringColor, stringGroup1);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup1);
+    turnOn(stringColor, stringGroup2);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup2);
+    turnOn(stringColor, stringGroup1);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup1);
+    delay(adjustedEighthNote);
   }
 }
 
+
+void screamGuitars2(int guitarColor, int guitarGroup, int stringColor, int stringGroup1, int stringGroup2, int dblStringColor, int dblStringGroup){
+  //85-88
+  int adjustedQuarterNote = quarterNote - 30;
+  int adjustedEighthNote = eighthNote - 5;
+  for (int i = 0; i < 4; i++) {
+    clearLights();
+    turnOn(guitarColor, guitarGroup);
+    turnOn(dblStringColor, dblStringGroup);
+    delay(adjustedQuarterNote);
+    turnOff(guitarGroup);
+    turnOff(dblStringGroup);
+    turnOn(stringColor, stringGroup1);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup1);
+    turnOn(stringColor, stringGroup2);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup2);
+    turnOn(stringColor, stringGroup1);
+    delay(adjustedEighthNote);
+    turnOff(stringGroup1);
+    delay(adjustedEighthNote);
+  }
+}
 
 
 
