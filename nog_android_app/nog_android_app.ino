@@ -496,7 +496,6 @@ void songBells() {
 
   /********************************************************************** next up **********************************************/
   //89-92 organ main riff
-  //turnOnAll(666);
   int sweepColors[] = {669,671,667,670};
   int adjustedSixteenthNote = sixteenthNote;
   for (int i = 0; i < 4; i=i+2) {
@@ -554,10 +553,26 @@ void songBells() {
 
   //93-96 organ heavy riff
   clearLights();
-  turnOnAll(666);
-  //organHeavyRiff();
+  int adjustedEighthNote = eighthNote;
+  int burstColors[] = {669,671,667,670};
+  for (int i = 0; i < 4; i++) {
+    turnOn(burstColors[i], centerGroup);
+    delay(adjustedEighthNote);
+    turnOff(centerGroup);
+    delay(adjustedEighthNote);
+    turnOn(burstColors[i], centerGroup);
+    delay(adjustedEighthNote);
+    turnOn(burstColors[i], shortBranchGroup);
+    delay(adjustedEighthNote);
+    turnOn(burstColors[i], branchArmsGroup);
+    delay(adjustedEighthNote);
+    turnOn(burstColors[i], tipsGroup);
+    delay(adjustedEighthNote);
+    clearLights();
+  }
 
   //97-100 huge hits
+  turnOnAll(666);
   //hugeHits();
 
   //101-105 hold and last huge hit
