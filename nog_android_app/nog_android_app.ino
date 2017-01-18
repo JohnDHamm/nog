@@ -480,17 +480,19 @@ void songBells() {
     descendPianoHighGuitar(669, shortBranchGroup, 666, tipsGroup); //riff: aqua,shortBranch - guitar: red, tips
   }
 
-  /********************************************************************** next up **********************************************/
-  //61-80 quiet piano main riff, + hi piano, + belss, + strings
+  //61-80 quiet piano main riff, + hi piano, + bells, + strings
   int riffColors[] = {666,668};
   int riffGroup1[] = {3, 0,10,20};
   int riffGroup2[] = {3, 5,15,25};
   int hiPianoColors[] = {666,668,667,670,671,669,667,670,666,668};
   int hiPianoGroup1[] = {3, 4,14,24};
   int hiPianoGroup2[] = {3, 9,19,29};
+  int bellColors[] = {671,667,669,668};
+  int stringColors[] = {668,670,666,671};
   
-  quietPianoRiff(riffColors, riffGroup1, riffGroup2, hiPianoColors, hiPianoGroup1, hiPianoGroup2);
+  quietPianoRiff(riffColors, riffGroup1, riffGroup2, hiPianoColors, hiPianoGroup1, hiPianoGroup2, bellColors, branchArmsGroup, stringColors, tipsGroup);
 
+  /********************************************************************** next up **********************************************/
   //81-88 screaming guitars main riff
   //screamGuitars();
 
@@ -777,7 +779,7 @@ void descendPianoHighGuitar(int riffColor, int riffGroup, int guitarColor, int g
   }
 }
 
-void quietPianoRiff(int riffColors[], int riffGroup1, int riffGroup2, int hiPianoColors[], int hiPianoGroup1, int hiPianoGroup2) {
+void quietPianoRiff(int riffColors[], int riffGroup1, int riffGroup2, int hiPianoColors[], int hiPianoGroup1, int hiPianoGroup2, int bellColors[], int bellGroup, int stringColors[], int stringGroup) {
   //61-63
   for (int i = 0; i < 3; i++) {
     turnOn(riffColors[0], riffGroup1);
@@ -830,11 +832,49 @@ void quietPianoRiff(int riffColors[], int riffGroup1, int riffGroup2, int hiPian
     }
   }
   //73-76 add bells
-
-
+  for (int j = 0; j < 8; j = j + 2) {
+    turnOn(riffColors[0], riffGroup1);
+    turnOn(riffColors[1], riffGroup2);
+    turnOn(hiPianoColors[j+1], hiPianoGroup1);
+    turnOn(hiPianoColors[j], hiPianoGroup2);
+    turnOn(bellColors[j/2], bellGroup);
+    delay(quarterNote);
+    turnOn(riffColors[1], riffGroup1);
+    turnOn(riffColors[0], riffGroup2);
+    delay(eighthNote);
+    turnOn(riffColors[0], riffGroup1);
+    turnOn(riffColors[1], riffGroup2);
+    delay(eighthNote);
+    turnOn(riffColors[1], riffGroup1);
+    turnOn(riffColors[0], riffGroup2);
+    turnOn(hiPianoColors[j+2], hiPianoGroup1);
+    turnOn(hiPianoColors[j+3], hiPianoGroup2);
+    delay(quarterNote);
+  }
   //77-80 add strings
-  
+  for (int j = 0; j < 8; j = j + 2) {
+    turnOn(riffColors[0], riffGroup1);
+    turnOn(riffColors[1], riffGroup2);
+    turnOn(hiPianoColors[j+1], hiPianoGroup1);
+    turnOn(hiPianoColors[j], hiPianoGroup2);
+    turnOn(bellColors[j/2], bellGroup);
+    turnOn(stringColors[j/2], stringGroup);
+    delay(quarterNote);
+    turnOn(riffColors[1], riffGroup1);
+    turnOn(riffColors[0], riffGroup2);
+    delay(eighthNote);
+    turnOn(riffColors[0], riffGroup1);
+    turnOn(riffColors[1], riffGroup2);
+    delay(eighthNote);
+    turnOn(riffColors[1], riffGroup1);
+    turnOn(riffColors[0], riffGroup2);
+    turnOn(hiPianoColors[j+2], hiPianoGroup1);
+    turnOn(hiPianoColors[j+3], hiPianoGroup2);
+    delay(quarterNote);
+  }
 }
+
+
 
 
 
