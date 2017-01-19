@@ -86,6 +86,9 @@ int greenLED = 0;
 int sixteenthNote = 81;
 int eighthNote = sixteenthNote * 2;
 int quarterNote = eighthNote * 2;
+int measure = quarterNote * 3;
+int currentRandomLightNum;
+int currentRandomColor;
 
 // A small helper
 void error(const __FlashStringHelper*err) {
@@ -163,9 +166,7 @@ void setup(void) {
   // Set Bluefruit to DATA mode
   Serial.println( F("Switching to DATA mode!") );
   ble.setMode(BLUEFRUIT_MODE_DATA);
-
   Serial.println(F("******************************"));
-
 }
 
 /**************************************************************************/
@@ -225,12 +226,10 @@ void loop(void) {
         clearLights();
         break;
     }
-
     Serial.println("done");
     receivedData = "";
   }
 
-  
   if ( continuePattern ) {
     switch ( action ) {
       case '1':
@@ -247,9 +246,7 @@ void loop(void) {
         break;
     }
   }
-  
 }
-
 
 
 /* *********FUNCTIONS**************** */
@@ -295,7 +292,6 @@ void chaseRed() {
   }
 }
 
-
 void clearLights() {
   for(int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
@@ -332,9 +328,7 @@ void songBells() {
   int branchSW[] = {4, 20,21,22,23};
   int branchNW[] = {4, 25,26,27,28};
   
-
   clearLights();
-
   delay(125); //intial delay for music to start on phone app
 
   //1-7 chunky guitar riff with start measure - blue, shortBranchGroup, bass: blue all Inner
@@ -362,7 +356,6 @@ void songBells() {
     chunkyGuitarBellsRiff(670, allInnerGroup, 668, tipsGroup, 670, shortBranchGroup, 666 + i, branchArmsGroup);  //bass, bells, riff, strings
   }
   chunkyGuitarBellsEnd(670, allInnerGroup, 667, tipsGroup, 670, shortBranchGroup, 669, branchArmsGroup); //bass, bells, riff, strings
-
 
   //21-24 chunky guitar riff with start measure - blue, shortBranchGroup
   chunkyGuitarStart(670, shortBranchGroup);
@@ -493,8 +486,6 @@ void songBells() {
   screamGuitars(667, allInnerGroup, 667, branchArmsGroup, tipsGroup); //guitar, string1 string2
   screamGuitars2(668, allInnerGroup, 668, branchArmsGroup, tipsGroup, 668, tipsGroup); //guitar, string1 string2, dblString
 
-
-  /********************************************************************** next up **********************************************/
   //89-92 organ main riff
   int sweepColors[] = {669,671,667,670};
   int adjustedSixteenthNote = sixteenthNote;
@@ -550,7 +541,6 @@ void songBells() {
     delay(adjustedSixteenthNote);
   }
 
-
   //93-96 organ heavy riff
   clearLights();
   int adjustedEighthNote = eighthNote;
@@ -572,14 +562,11 @@ void songBells() {
   }
 
   //97-100 huge hits
-  turnOnAll(666);
-  //hugeHits();
+  hugeHits();
 
   //101-105 hold and last huge hit
-  
-
+  bigFinish();
 }
-
 
 void turnOn(int color, int group[]) {
   setColor(color);
@@ -598,8 +585,15 @@ void turnOnSingleLED(int color, int lightNum) {
 
 void turnOnAll(int color) {
   setColor(color);
-  for (int i = 1; i < NUMPIXELS; i++) {
+  for (int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(redLED, greenLED, blueLED));
+  }
+  strip.show();
+}
+
+void turnOnAllRGB(int red, int green, int blue) {
+  for (int i = 0; i < NUMPIXELS; i++) {
+    strip.setPixelColor(i, strip.Color(red, green, blue));
   }
   strip.show();
 }
@@ -616,7 +610,6 @@ void turnOffSingleLED(int lightNum){
   strip.setPixelColor(lightNum, strip.Color(0, 0, 0));
   strip.show();
 }
-
 
 void chunkyGuitarStart(int color, int group) {
   turnOnAll(125);
@@ -802,7 +795,6 @@ void descendingGuitar(int cymbalColor, int cymbalGroup, int riffStartColor, int 
     currentRiffColor = currentRiffColor - 1;
     turnOff(riffGroup4);
   }
-  
   turnOn(cymbalColor, cymbalGroup);
   turnOn(currentRiffColor, riffGroup1);
   delay(quarterNote);
@@ -990,7 +982,77 @@ void screamGuitars2(int guitarColor, int guitarGroup, int stringColor, int strin
   }
 }
 
+void hugeHits() {
+  int currentRed = 255;
+  int currentGreen = 255;
+  int currentBlue = 0;
+  int interval = 16;
+  int decrement = 256/interval;
+  //measure 97 -yellow fade
+  for (int i = 0; i < interval; i++) {
+    currentRed = currentRed - decrement;
+    currentGreen = currentGreen - decrement;
+    turnOnAllRGB(currentRed, currentGreen, currentBlue);
+    delay(measure / interval);
+  }
+  //measure 98 -blue fade
+  currentBlue = 255;
+  currentRed = 0;
+  currentGreen = 0;
+  for (int i = 0; i < interval; i++) {
+    currentBlue = currentBlue - decrement;
+    turnOnAllRGB(currentRed, currentGreen, currentBlue);
+    delay(measure / interval);
+  }
+  //measure 99 -red fade
+  currentBlue = 0;
+  currentRed = 255;
+  currentGreen = 0;
+  for (int i = 0; i < interval; i++) {
+    currentRed = currentRed - decrement;
+    turnOnAllRGB(currentRed, currentGreen, currentBlue);
+    delay(measure / interval);
+  }
+  //measure 100 -green fade
+  currentBlue = 0;
+  currentRed = 0;
+  currentGreen = 255;
+  for (int i = 0; i < interval; i++) {
+    currentGreen = currentGreen - decrement;
+    turnOnAllRGB(currentRed, currentGreen, currentBlue);
+    delay(measure / interval);
+  }
+}
 
+void bigFinish() {
+  turnOnAll(125);
+  delay(sixteenthNote);
+  clearLights();
+  int duration = (measure * 4) - sixteenthNote;
+  int interval = 100;
+  int currentLight;
+  //101-104
+  for (int i = 0; i < interval; i++) {
+    //random light number - turn on/off
+    setRandomLightNum();
+    setRandomColor();
+    turnOnSingleLED(currentRandomColor, currentRandomLightNum);
+    delay(duration / interval);
+    turnOffSingleLED(currentRandomLightNum);
+  }
+  //105
+  turnOnAll(125);
+  delay(measure);
+  clearLights();
+}
+
+void setRandomLightNum() {
+  currentRandomLightNum = random(30);
+}
+
+void setRandomColor() {
+  currentRandomColor = random(666, 672);
+}
 
 void setColor(int color) {
   if (color < 256) {
@@ -1032,7 +1094,6 @@ void setColor(int color) {
 
 void rainbowShift() {
   int shiftAmount = 5;
-
   //start with all red
   for (int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(125, 0, 0));
