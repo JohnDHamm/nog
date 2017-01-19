@@ -1141,24 +1141,46 @@ void rainbowShift() {
 }
 
 void rainbowBurst() {
-  int shiftAmount = 5;
-  int colorOffset = 42;
-  //int innerColor = 0;
-  turnOn(innerColor, innerGroup);
-  shortBranchColor = innerColor + colorOffset;
-  if (shortBranchColor > 749) { shortBranchColor -= 750 }
-  turnOn(shortBranchColor, shortBranchGroup);
-  armsBranchColor = shortBranchColor + colorOffset;
-  if (armsBranchColor > 749) { armsBranchColor -= 750 }
-  turnOn(armsBranchColor, armsBranchGroup);
-  tipsColor = armsBranchColor + colorOffset;
-  if (tipsColor > 749) { tipsColor -= 750 }
+  int shiftAmount = 2;
+  int colorOffset = 84;
+  int centerGroup[] = {6, 0,5,10,15,20,25};
+  int shortBranchGroup[] = {6, 4,9,14,19,24,29};
+  int branchArmsGroup[] = {12, 1,3,6,8,11,13,16,18,21,23,26,28};
+  int tipsGroup[] = {6, 2,7,12,17,22,27};
 
+  turnOnRainbowGroup(innerColor, centerGroup);
+  //delay(100);
+  Serial.print("innerColor: ");Serial.println(innerColor);
+  int shortBranchColor = innerColor + colorOffset;
+  if (shortBranchColor > 749) {shortBranchColor -= 750; }
+  Serial.print("shortBranchColor: ");Serial.println(shortBranchColor);
+  turnOnRainbowGroup(shortBranchColor, shortBranchGroup);
+  //delay(100);
+  int armsBranchColor = shortBranchColor + colorOffset;
+  if (armsBranchColor > 749) { armsBranchColor -= 750; }
+  Serial.print("armsBranchColor: ");Serial.println(armsBranchColor);
+  turnOnRainbowGroup(armsBranchColor, branchArmsGroup);
+  //delay(100);
+  int tipsColor = armsBranchColor + colorOffset;
+  if (tipsColor > 749) { tipsColor -= 750; }
+  Serial.print("stipsColor: ");Serial.println(tipsColor);
+  turnOnRainbowGroup(tipsColor, tipsGroup);
+  //delay(100);
   innerColor += shiftAmount;
-  
+  if (innerColor > 749) { innerColor -= 750; }
+  Serial.print("innerColor: ");Serial.println(innerColor);
 }
 
-void convertColor(int c) {
+void turnOnRainbowGroup(int color, int group[]) {
+  setRainbowColor(color);
+  int groupTotal = group[0];
+  for (int i = 1; i <= groupTotal; i++) {
+    strip.setPixelColor(group[i], strip.Color(redLED, greenLED, blueLED));
+  }
+  strip.show();
+}
+
+void setRainbowColor(int c) {
   if (c < 126) { //red to yellow
     redLED = 125;
     greenLED = c;
@@ -1189,5 +1211,6 @@ void convertColor(int c) {
     greenLED = 0;
     blueLED = 750 - c;
   }
+  Serial.print("RGB: ");Serial.print(redLED);Serial.print(greenLED);Serial.println(blueLED);
 }
 
