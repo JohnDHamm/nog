@@ -76,19 +76,21 @@ char receivedData;
 boolean continuePattern = false;
 char action;
 
-//for pattern buttons
+//for patterns
 int pause = 50; //for chase functions
-
-// ****for Carol of the Bells***********
 int redLED = 0;
 int blueLED = 0;
 int greenLED = 0;
+int currentRandomLightNum;
+int currentRandomColor;
+int currentPatternColor = 666;
+int innerColor = 0;
+
+// ****for Carol of the Bells***********
 int sixteenthNote = 81;
 int eighthNote = sixteenthNote * 2;
 int quarterNote = eighthNote * 2;
 int measure = quarterNote * 3;
-int currentRandomLightNum;
-int currentRandomColor;
 
 // A small helper
 void error(const __FlashStringHelper*err) {
@@ -103,8 +105,8 @@ void error(const __FlashStringHelper*err) {
 /**************************************************************************/
 void setup(void) {
   
-  //while (!Serial);  // required for Flora & Micro
-  //delay(500);
+  while (!Serial);  // required for Flora & Micro
+  delay(500);
 
   // turn off neopixel
   strip.begin(); // This initializes the NeoPixel library.
@@ -200,22 +202,22 @@ void loop(void) {
         songBells();
         break;
       case '1':
-        Serial.println("pattern one");
+        Serial.println("pattern one - blink");
         action = receivedData;
         continuePattern = true;
         break;
       case '2':
-        Serial.println("pattern two");
+        Serial.println("pattern two - chase");
         action = receivedData;
         continuePattern = true;
         break;
       case '3':
-        Serial.println("pattern three");
+        Serial.println("pattern three - rainbow");
         action = receivedData;
         continuePattern = true;
         break;
       case '4':
-        Serial.println("pattern four");
+        Serial.println("pattern four - sparkle");
         action = receivedData;
         continuePattern = true;
         break;
@@ -233,26 +235,48 @@ void loop(void) {
   if ( continuePattern ) {
     switch ( action ) {
       case '1':
-        chaseBlue();
+        slowBlink();
         break;
       case '2':
-        chaseGreen();
+        chase();
         break;
       case '3':
-        chaseRed();
+        rainbowBurst();
         break;
       case '4':
-        rainbowShift();
+        sparkle();
         break;
     }
   }
 }
 
-
 /* *********FUNCTIONS**************** */
-void chaseBlue() {
+void slowBlink() {
+  int blinkGroup1[] = {24, 0,1,2,3,5,6,7,8,10,11,12,13,15,16,17,18,20,21,22,23,25,26,27,28};
+  int blinkGroup2[] = {6, 4,9,14,19,24,29};
+  int blinkInterval = 750;
+  //currentPatternColor;
+  turnOn(currentPatternColor, blinkGroup1);
+  delay(blinkInterval * 2);
+  turnOff(blinkGroup1);
+  turnOn(currentPatternColor, blinkGroup2);
+  delay(blinkInterval);
+  turnOff(blinkGroup2);
+  currentPatternColor ++;
+  checkPatternColor();
+}
+
+void checkPatternColor() {
+  if (currentPatternColor > 671) {
+    currentPatternColor = 666;
+  }
+}
+
+void chase() {
+  setRandomColor();
+  setColor(currentRandomColor);
   for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(0, 0, 125));
+    strip.setPixelColor(i, strip.Color(redLED, greenLED, blueLED));
     strip.show();
     delay(pause);
   }
@@ -264,31 +288,14 @@ void chaseBlue() {
   }
 }
 
-void chaseGreen() {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(0, 125, 0));
-    strip.show();
-    delay(pause);
-  }
-  delay(100);
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(0, 0, 0));
-    strip.show();
-    delay(pause);
-  }
-}
-
-void chaseRed() {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(125, 0, 0));
-    strip.show();
-    delay(pause);
-  }
-  delay(100);
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(0, 0, 0));
-    strip.show();
-    delay(pause);
+void sparkle() {
+  int sparklePause = 20;
+  int sparkleColor[] = {50, 50, 200};
+  for (int i = 0; i < 100; i++) {
+    setRandomLightNum();
+    turnOnRGBsingleLED(sparkleColor, currentRandomLightNum);
+    delay(sparklePause);
+    turnOffSingleLED(currentRandomLightNum);
   }
 }
 
@@ -297,22 +304,6 @@ void clearLights() {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
    }
   strip.show();
-}
-
-void testArrays() {
-  Serial.println("test array combo");
-  int array1[] = {3, 1,2,3};
-  int array2[] = {3, 5,6,7};
-  //Serial.println(array1[2]);
-  int arrayCombine[2][4] = {{3, 1,2,3}, {array2}};
-  //Serial.println(arrayCombine[0]);
-  for ( int i = 0; i < 2; i++) {
-    //int nextArray[] = {arrayCombine[i]};
-    for ( int j = 1; j < 4; j++) {
-      Serial.print("next led");
-      Serial.println(arrayCombine[i][j]);
-    }
-  }
 }
 
 void songBells() {
@@ -595,6 +586,11 @@ void turnOnAllRGB(int red, int green, int blue) {
   for (int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, strip.Color(red, green, blue));
   }
+  strip.show();
+}
+
+void turnOnRGBsingleLED(int RGBcolor[], int ledNum) {
+  strip.setPixelColor(ledNum, strip.Color(RGBcolor[0], RGBcolor[1], RGBcolor[2]));
   strip.show();
 }
 
@@ -1048,6 +1044,7 @@ void bigFinish() {
 
 void setRandomLightNum() {
   currentRandomLightNum = random(30);
+  //Serial.println("random led: ");Serial.print(currentRandomLightNum);
 }
 
 void setRandomColor() {
@@ -1143,4 +1140,54 @@ void rainbowShift() {
   }
 }
 
+void rainbowBurst() {
+  int shiftAmount = 5;
+  int colorOffset = 42;
+  //int innerColor = 0;
+  turnOn(innerColor, innerGroup);
+  shortBranchColor = innerColor + colorOffset;
+  if (shortBranchColor > 749) { shortBranchColor -= 750 }
+  turnOn(shortBranchColor, shortBranchGroup);
+  armsBranchColor = shortBranchColor + colorOffset;
+  if (armsBranchColor > 749) { armsBranchColor -= 750 }
+  turnOn(armsBranchColor, armsBranchGroup);
+  tipsColor = armsBranchColor + colorOffset;
+  if (tipsColor > 749) { tipsColor -= 750 }
+
+  innerColor += shiftAmount;
+  
+}
+
+void convertColor(int c) {
+  if (c < 126) { //red to yellow
+    redLED = 125;
+    greenLED = c;
+    blueLED = 0;
+  }
+  else if (c < 251) { //yellow to green
+    redLED = 250 - c;
+    greenLED = 125;
+    blueLED = 0;
+  }
+  else if (c < 376) { //green to aqua
+    redLED = 0;
+    greenLED = 125;
+    blueLED = c - 250;
+  }
+  else if (c < 501) { //aqua to blue
+    redLED = 0;
+    greenLED = 500 - c;
+    blueLED = 125;
+  }
+  else if (c < 676) { //blue to purple
+    redLED = c - 500;
+    greenLED = 0;
+    blueLED = 125;
+  }
+  else { //purple to red
+    redLED = 125;
+    greenLED = 0;
+    blueLED = 750 - c;
+  }
+}
 
