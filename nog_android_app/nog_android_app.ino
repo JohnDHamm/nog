@@ -86,6 +86,11 @@ int currentRandomColor;
 int currentPatternColor = 666;
 int innerColor = 0;
 
+int centerGroup[] = {6, 0,5,10,15,20,25};
+int shortBranchGroup[] = {6, 4,9,14,19,24,29};
+int branchArmsGroup[] = {12, 1,3,6,8,11,13,16,18,21,23,26,28};
+int tipsGroup[] = {6, 2,7,12,17,22,27};
+
 // ****for Carol of the Bells***********
 int sixteenthNote = 81;
 int eighthNote = sixteenthNote * 2;
@@ -307,11 +312,7 @@ void clearLights() {
 }
 
 void songBells() {
-  int centerGroup[] = {6, 0,5,10,15,20,25};
-  int shortBranchGroup[] = {6, 4,9,14,19,24,29};
   int allInnerGroup[] = {12, 0,4,5,9,10,14,15,19,20,24,25,29};
-  int branchArmsGroup[] = {12, 1,3,6,8,11,13,16,18,21,23,26,28};
-  int tipsGroup[] = {6, 2,7,12,17,22,27};
   int branchN[] = {4, 0,1,2,3};
   int branchNE[] = {4, 5,6,7,8};
   int branchSE[] = {4, 10,11,12,13};
@@ -1089,76 +1090,34 @@ void setColor(int color) {
   }
 }
 
-void rainbowShift() {
-  int shiftAmount = 5;
-  //start with all red
-  for (int i = 0; i < NUMPIXELS; i++) {
-    strip.setPixelColor(i, strip.Color(125, 0, 0));
-    strip.show();
-  }
-  //red to yellow
-  for (int c = 1; c < 126; c = c + shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(125, c, 0));
-      strip.show();
-    }
-  }
-  //yellow to green
-  for (int c = 124; c > -1; c = c - shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(c, 125, 0));
-      strip.show();
-    }
-  }
-  //green to aqua
-  for (int c = 1; c < 126; c = c + shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(0, 125, c));
-      strip.show();
-    }
-  }
-  //aqua to blue
-  for (int c = 124; c > -1; c = c - shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(0, c, 125));
-      strip.show();
-    }
-  }
-  //blue to purple
-  for (int c = 1; c < 126; c = c + shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(c, 0, 125));
-      strip.show();
-    }
-  }
-  //purple to red
-  for (int c = 124; c > -1; c = c - shiftAmount) {
-    for (int i = 0; i < NUMPIXELS; i++) {
-      strip.setPixelColor(i, strip.Color(125, 0, c));
-      strip.show();
-    }
-  }
-}
-
 void rainbowBurst() {
-  int shiftAmount = 5;
-  int colorOffset = 42;
-  //int innerColor = 0;
-  turnOn(innerColor, innerGroup);
-  shortBranchColor = innerColor + colorOffset;
-  if (shortBranchColor > 749) { shortBranchColor -= 750 }
-  turnOn(shortBranchColor, shortBranchGroup);
-  armsBranchColor = shortBranchColor + colorOffset;
-  if (armsBranchColor > 749) { armsBranchColor -= 750 }
-  turnOn(armsBranchColor, armsBranchGroup);
-  tipsColor = armsBranchColor + colorOffset;
-  if (tipsColor > 749) { tipsColor -= 750 }
+  int shiftAmount = 2;
+  int colorOffset = 66;
 
-  innerColor += shiftAmount;
-  
+  turnOnRainbowGroup(innerColor, centerGroup);
+  int shortBranchColor = innerColor + colorOffset;
+  if (shortBranchColor > 749) {shortBranchColor -= 750; }
+  turnOnRainbowGroup(shortBranchColor, shortBranchGroup);
+  int armsBranchColor = shortBranchColor + colorOffset;
+  if (armsBranchColor > 749) { armsBranchColor -= 750; }
+  turnOnRainbowGroup(armsBranchColor, branchArmsGroup);
+  int tipsColor = armsBranchColor + colorOffset;
+  if (tipsColor > 749) { tipsColor -= 750; }
+  turnOnRainbowGroup(tipsColor, tipsGroup);
+  innerColor -= shiftAmount;
+  if (innerColor < 0) { innerColor += 750; }
 }
 
-void convertColor(int c) {
+void turnOnRainbowGroup(int color, int group[]) {
+  setRainbowColor(color);
+  int groupTotal = group[0];
+  for (int i = 1; i <= groupTotal; i++) {
+    strip.setPixelColor(group[i], strip.Color(redLED, greenLED, blueLED));
+  }
+  strip.show();
+}
+
+void setRainbowColor(int c) {
   if (c < 126) { //red to yellow
     redLED = 125;
     greenLED = c;
