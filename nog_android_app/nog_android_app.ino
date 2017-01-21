@@ -110,8 +110,8 @@ void error(const __FlashStringHelper*err) {
 /**************************************************************************/
 void setup(void) {
   
-  while (!Serial);  // required for Flora & Micro
-  delay(500);
+  //while (!Serial);  // required for Flora & Micro
+  //delay(500);
 
   // turn off neopixel
   strip.begin(); // This initializes the NeoPixel library.
